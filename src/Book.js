@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-function Book(props) {
-  const { title, author, image } = props
+function Book({ title, author, image }) {
   return (
     <div className="book">
       <div className="book-top">
