@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Book({ title, author, image }) {
+function Book({ title, author, image, shelf }) {
   return (
     <div className="book">
       <div className="book-top">
