@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
-import Book from './Book'
+import BookShelf from './BookShelf'
 import { getAll } from './BooksAPI'
 import './App.css'
 
@@ -41,10 +41,9 @@ class BooksApp extends React.Component {
     .catch(
       (error) => console.error(error)
     )
-
   }
- 
-  render() {
+
+   render() {
     return (
       <div className="app">
         <Route path="/search" render={() => (
@@ -70,54 +69,17 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    { this.state.books.currentlyReading.map((book, index) =>
-                      <li key={index}>
-                        <Book 
-                          title={book.title} 
-                          author={book.author} 
-                          image={book.image}
-                          shelf={book.shelf} />
-                      </li>
-                    ) }
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    { this.state.books.wantToRead.map((book, index) =>
-                      <li key={index}>
-                        <Book 
-                          title={book.title} 
-                          author={book.author} 
-                          image={book.image}
-                          shelf={book.shelf} />
-                      </li>
-                    ) }
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    { this.state.books.read.map((book, index) =>
-                      <li key={index}>
-                        <Book 
-                          title={book.title} 
-                          author={book.author} 
-                          image={book.image}
-                          shelf={book.shelf} />
-                      </li>
-                    ) }
-                    </ol>
-                  </div>
-                </div>
+                <BookShelf 
+                  title="Currently Reading" 
+                  books={this.state.books.currentlyReading} />
+
+                <BookShelf 
+                  title="Want to Read" 
+                  books={this.state.books.wantToRead} />
+
+                <BookShelf 
+                  title="Read" 
+                  books={this.state.books.read} />
               </div>
             </div>
             <div className="open-search">
