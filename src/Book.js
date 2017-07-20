@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 function Book({ title, author, image, shelf }) {
   return (
@@ -19,6 +20,13 @@ function Book({ title, author, image, shelf }) {
       <div className="book-authors">{ author }</div>
     </div>
   )
+}
+
+Book.propTypes = {
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  shelf: PropTypes.string.isRequired
 }
 
 export default Book
