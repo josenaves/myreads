@@ -1,31 +1,46 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
 import BookShelf from './BookShelf'
-import { getAll } from './BooksAPI'
+import Book from './Book'
+import { getAll, search } from './BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = { 
       books: {
         currentlyReading: [],
         wantToRead: [],
         read: []
-      }    
+      },
+      results: [],
+      query: ''
     }
-    this.handleChange = this.handleChange.bind(this);
-  }
 
+    this.handleChange = this.handleChange.bind(this)
+    this.updateQuery = this.updateQuery.bind(this)
+    this.putOnShelf = this.putOnShelf.bind(this)
+    this.makeBooks = this.makeBooks.bind(this)
+  }
+  
+  makeBooks(books){
+    if (!books) console.error("no books!")
+    return books.map( book => {
+      const image = book.imageLinks ? `url("${book.imageLinks.thumbnail}")` : `url("./no-image.png")`
+      const author = book.authors ? book.authors.join(", ") : "authors unknown"
+      const title = book.title
+      const shelf = book.shelf
+      const id = book.id
+      return { id, title, author, image, shelf }
+    })
+  }  
+  
   componentDidMount(){
     getAll().then(books => {
-      const newBooks = books.map( (book, index) => {
-        const image = `url("${book.imageLinks.thumbnail}")`
-        const author = book.authors.join(", ")
-        const title = book.title
-        const shelf = book.shelf
-        return { id: index, title, author, image, shelf }
-      })
+      if (!books) console.error("No books !")
+      const newBooks = this.makeBooks(books)
 
       const currentlyReading = newBooks.filter(book =>  book.shelf === 'currentlyReading')
       const wantToRead = newBooks.filter(book =>  book.shelf === 'wantToRead')
@@ -40,11 +55,24 @@ class BooksApp extends React.Component {
       })
     })
     .catch(
-      (error) => console.error(error)
+      error => console.error(error)
+    )
+  }
+
+  updateQuery(query) {
+    this.setState({ query: query.trim() })
+    search(query, 20).then( books => {
+      if (!books) console.error("No books !")
+      const searchedBooks = books ? this.makeBooks(books) : []
+      this.setState({ results: searchedBooks })
+    })
+    .catch(
+      error => console.error(error)
     )
   }
 
   handleChange(id, origin, destination) {
+    console.log(id, origin, destination)
     if (destination === 'none') return
 
     const books = this.state.books
@@ -74,6 +102,29 @@ class BooksApp extends React.Component {
     this.setState({books})
   }
 
+  putOnShelf(book, destination) {
+    if (destination === 'none') return
+    
+    const books = this.state.books
+
+    // add new book into destination shelf
+    const destinationShelf = books[destination] = [
+      ...books[destination],
+      {
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        image: book.image,
+        shelf: destination,
+      }
+    ]
+
+    // set state with update shelves
+    books[destination] = destinationShelf
+    
+    this.setState({books})
+  }
+
    render() {
     return (
       <div className="app">
@@ -84,11 +135,23 @@ class BooksApp extends React.Component {
               <Link to="/" className="close-search">Close</Link>
                             
               <div className="search-books-input-wrapper">
-                <input type="text" placeholder="Search by title or author"/>
+                <input 
+                  type="text" 
+                  placeholder="Search by title or author"
+                  value={this.state.query}
+                  onChange={ event => this.updateQuery(event.target.value)}/>           
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid">
+              { this.state.results.map( book =>
+                <li key={book.id}>
+                  <Book 
+                    {...book}
+                    onShelfChanged={ e => this.putOnShelf(book, e.target.value) } />
+                </li> 
+              )}
+              </ol>
             </div>
           </div>
         )} />

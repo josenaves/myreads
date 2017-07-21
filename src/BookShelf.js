@@ -16,7 +16,7 @@ function BookShelf({ title, books, onShelfChanged=f=>f }) {
               author={book.author} 
               image={book.image}
               shelf={book.shelf}
-              onChangeShelf={ event => onShelfChanged(book.id, book.shelf, event.target.value) } />
+              onShelfChanged={ e => onShelfChanged(book.id, book.shelf, e.target.value) } />
           </li>
         ) }
         </ol>
