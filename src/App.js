@@ -14,21 +14,22 @@ class BooksApp extends React.Component {
         read: []
       }    
     }
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount(){
     getAll().then(books => {
-      const newBooks = books.map(book => {
+      const newBooks = books.map( (book, index) => {
         const image = `url("${book.imageLinks.thumbnail}")`
         const author = book.authors.join(", ")
         const title = book.title
         const shelf = book.shelf
-        return { title, author, image, shelf }
+        return { id: index, title, author, image, shelf }
       })
 
-      const currentlyReading = newBooks.filter((book) =>  book.shelf === 'currentlyReading')
-      const wantToRead = newBooks.filter((book) =>  book.shelf === 'wantToRead')
-      const read = newBooks.filter((book) =>  book.shelf === 'read')
+      const currentlyReading = newBooks.filter(book =>  book.shelf === 'currentlyReading')
+      const wantToRead = newBooks.filter(book =>  book.shelf === 'wantToRead')
+      const read = newBooks.filter(book =>  book.shelf === 'read')
 
       this.setState({
         books: {
@@ -41,6 +42,36 @@ class BooksApp extends React.Component {
     .catch(
       (error) => console.error(error)
     )
+  }
+
+  handleChange(id, origin, destination) {
+    if (destination === 'none') return
+
+    const books = this.state.books
+    const movingBook = books[origin].find(x => x.id === id)
+  
+    // remove book id from origin shelf
+    const originShelf = books[origin].filter(
+      book => book.id !== id
+    )
+
+    // add new book into destination shelf
+    const destinationShelf = books[destination] = [
+      ...books[destination],
+      {
+        id: movingBook.id,
+        title: movingBook.title,
+        author: movingBook.author,
+        image: movingBook.image,
+        shelf: destination,
+      }
+    ]
+
+    // set state with update shelves
+    books[origin] = originShelf
+    books[destination] = destinationShelf
+    
+    this.setState({books})
   }
 
    render() {
@@ -71,15 +102,18 @@ class BooksApp extends React.Component {
               <div>
                 <BookShelf 
                   title="Currently Reading" 
-                  books={this.state.books.currentlyReading} />
+                  books={this.state.books.currentlyReading}
+                  onShelfChanged={this.handleChange} />
 
                 <BookShelf 
                   title="Want to Read" 
-                  books={this.state.books.wantToRead} />
+                  books={this.state.books.wantToRead}
+                  onShelfChanged={this.handleChange} />
 
                 <BookShelf 
                   title="Read" 
-                  books={this.state.books.read} />
+                  books={this.state.books.read}
+                  onShelfChanged={this.handleChange} />
               </div>
             </div>
             <div className="open-search">
