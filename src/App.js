@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Link } from 'react-router-dom'
 import BookShelf from './BookShelf'
 import Book from './Book'
-import { getAll, search } from './BooksAPI'
+import { getAll, search, update } from './BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -26,6 +26,7 @@ class BooksApp extends React.Component {
   }
   
   makeBooks(books){
+    console.log("makebooks: ", books)
     if (!books) console.error("no books!")
     return books.map( book => {
       const image = book.imageLinks ? `url("${book.imageLinks.thumbnail}")` : `url("./no-image.png")`
@@ -99,7 +100,12 @@ class BooksApp extends React.Component {
     books[origin] = originShelf
     books[destination] = destinationShelf
     
-    this.setState({books})
+    // call API to update book shelf
+    update(movingBook, destination).then(
+      this.setState({books})
+    ).catch(
+      error => console.error(error)
+    )
   }
 
   putOnShelf(book, destination) {
@@ -122,17 +128,26 @@ class BooksApp extends React.Component {
     // set state with update shelves
     books[destination] = destinationShelf
     
-    this.setState({books})
+    // call API to update book shelf
+    update(book, destination).then(
+      this.setState({books})
+    ).catch(
+      error => console.error(error)
+    ) 
   }
 
-   render() {
+  render() {
     return (
       <div className="app">
         <Route path="/search" render={() => (
           <div className="search-books">
             <div className="search-books-bar">
               
-              <Link to="/" className="close-search">Close</Link>
+              <Link
+                to="/"
+                className="close-search" 
+                onClick={ () => this.setState({results:[], query:''}) }>
+                Close</Link>
                             
               <div className="search-books-input-wrapper">
                 <input 
@@ -180,7 +195,9 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="open-search">
-              <Link to="/search">Add a book</Link>
+              <Link to="/search"
+                onClick={ () => this.setState({results:[], query:''}) }
+              >Add a book</Link>
             </div>
           </div>
         )} />

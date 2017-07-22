@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 function Book({ title, author, image, shelf, onShelfChanged=f=>f }) {
-  console.log("function =====> ", onShelfChanged)
   return (
     <div className="book">
       <div className="book-top">
