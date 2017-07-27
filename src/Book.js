@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-function Book({ title, author, image, shelf, onShelfChanged=f=>f }) {
+export default function Book({ title, author, image, shelf, onShelfChanged=f=>f }) {
   return (
     <div className="book">
       <div className="book-top">
@@ -30,4 +30,14 @@ Book.propTypes = {
   onShelfChanged: PropTypes.func
 }
 
-export default Book
+export const makeBooks = (books) => {
+    if (!books) console.error("no books!")
+    return books.map( book => {
+      const image = book.imageLinks ? `url("${book.imageLinks.thumbnail}")` : `url("./no-image.png")`
+      const author = book.authors ? book.authors.join(", ") : "authors unknown"
+      const title = book.title
+      const shelf = book.shelf
+      const id = book.id
+      return { id, title, author, image, shelf }
+    })
+  }
