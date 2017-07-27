@@ -31,7 +31,7 @@ class Search extends Component {
     ) 
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.handleSearchDebounced = _.debounce(() => {
       search(this.state.query, 20).then( books => {
         if (books.error) {
