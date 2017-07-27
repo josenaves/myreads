@@ -42,8 +42,7 @@ class BookList extends Component {
   }
 
   handleChange(id, origin, destination) {
-    console.log(id, origin, destination)
-    if (destination === 'none') return
+    //if (destination === 'none') return
 
     const books = this.state.books
     const movingBook = books[origin].find(x => x.id === id)
@@ -53,21 +52,25 @@ class BookList extends Component {
       book => book.id !== id
     )
 
-    // add new book into destination shelf
-    const destinationShelf = books[destination] = [
-      ...books[destination],
-      {
-        id: movingBook.id,
-        title: movingBook.title,
-        author: movingBook.author,
-        image: movingBook.image,
-        shelf: destination,
-      }
-    ]
-
-    // set state with update shelves
+    // update the origin shelf without the moving book
     books[origin] = originShelf
-    books[destination] = destinationShelf
+
+    if (destination !== 'none') {
+      // add new book into destination shelf
+      const destinationShelf = books[destination] = [
+        ...books[destination],
+        {
+          id: movingBook.id,
+          title: movingBook.title,
+          author: movingBook.author,
+          image: movingBook.image,
+          shelf: destination,
+        }
+      ]
+
+      // set state with update shelves
+      books[destination] = destinationShelf
+    }
     
     // call API to update book shelf
     update(movingBook, destination).then(
