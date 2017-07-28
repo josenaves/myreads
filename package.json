@@ -1,4 +1,12 @@
 {
+  "name": "my-reads",
+  "version": "1.0.0",
+  "description": "This is the project made for my Udacity React nanodegree",
+  "author": {
+    "email": "josenaves@gmail.com",
+    "name": "José Naves Moura Neto"
+  },
+  "bugs": "https://github.com/josenaves/myreads/issues",
   "dependencies": {
     "lodash": "^4.17.4",
     "prop-types": "^15.5.8",
