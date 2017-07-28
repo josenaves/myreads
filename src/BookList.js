@@ -8,20 +8,29 @@ class BookList extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { 
+    this.state = {
+      loading: false, 
       books: {
         currentlyReading: [],
         wantToRead: [],
         read: []
       }
     }
-
     this.handleChange = this.handleChange.bind(this)
   }
     
   componentDidMount(){
+    this.setState({ loading: true })
+
     getAll().then(books => {
-      if (!books) console.error("No books !")
+      
+      
+      if (!books) {
+        this.setState({ loading: false })
+        console.error("No books !")
+        return
+      }
+
       const newBooks = makeBooks(books)
 
       const currentlyReading = newBooks.filter(book =>  book.shelf === 'currentlyReading')
@@ -29,6 +38,7 @@ class BookList extends Component {
       const read = newBooks.filter(book =>  book.shelf === 'read')
 
       this.setState({
+        loading: false,
         books: {
           currentlyReading: [...currentlyReading],
           wantToRead: [...wantToRead],
@@ -37,13 +47,14 @@ class BookList extends Component {
       })
     })
     .catch(
-      error => console.error(error)
+      error => {
+        console.error(error)
+        this.setState({ loading: false })
+      }
     )
   }
 
   handleChange(id, origin, destination) {
-    //if (destination === 'none') return
-
     const books = this.state.books
     const movingBook = books[origin].find(x => x.id === id)
   
@@ -87,22 +98,26 @@ class BookList extends Component {
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          <div>
-            <BookShelf 
-              title="Currently Reading" 
-              books={this.state.books.currentlyReading}
-              onShelfChanged={this.handleChange} />
+            { this.state.loading 
+            ?  <div> <p>Loading... </p> </div>
+            : (
+            <div>
+              <BookShelf 
+                title="Currently Reading" 
+                books={this.state.books.currentlyReading}
+                onShelfChanged={this.handleChange} />
 
-            <BookShelf 
-              title="Want to Read" 
-              books={this.state.books.wantToRead}
-              onShelfChanged={this.handleChange} />
+              <BookShelf 
+                title="Want to Read" 
+                books={this.state.books.wantToRead}
+                onShelfChanged={this.handleChange} />
 
-            <BookShelf 
-              title="Read" 
-              books={this.state.books.read}
-              onShelfChanged={this.handleChange} />
-          </div>
+              <BookShelf 
+                title="Read" 
+                books={this.state.books.read}
+                onShelfChanged={this.handleChange} />
+            </div>
+          )}
         </div>
         <div className="open-search">
           <Link to="/search"
