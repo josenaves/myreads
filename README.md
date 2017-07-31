@@ -35,6 +35,14 @@ The project uses the following dependencies:
 * React Router V4
 * Lodash
 
+## Features implemented
+
+- Search books to add on shelves
+- Move books between shelves
+- Remove a book from shelf
+- Debounce on search
+
+
 ## Who am I
 
 I'm a software engineer. You can know more about me reading [my articles](http://blog.josenaves.com), reading my [tweets](http://twitter.com/josenaves), reading my [code](http://github.com/josenaves).
