@@ -27,18 +27,17 @@ class App extends React.Component {
     this.updateQuery = this.updateQuery.bind(this)
     this.putOnShelf = this.putOnShelf.bind(this)
     this.loadBooks = this.loadBooks.bind(this)
+    this.resetQuery = this.resetQuery.bind(this)
   }
-
+  
   componentDidMount(){
-    console.log("------ componentDidMount")
-
     this.loadBooks()
 
     this.handleSearchDebounced = _.debounce(() => {
       search(this.state.query, 20).then( books => {
         if (books.error) {
-          console.error("---- No books !")
           this.setState({ results:[], loading: false })
+          console.error("---- No books !")
         } else {
           const myBooks = [ 
             ...this.state.books.currentlyReading, 
@@ -48,7 +47,6 @@ class App extends React.Component {
           const returnedBooks = books ? makeBooks(books) : []
 
           const results = returnedBooks.map(rBook => {
-            console.log("rbook:", rBook)
             for (let mBook of myBooks) {
               if (mBook.id === rBook.id) {
                 return {...rBook, shelf: mBook.shelf}
@@ -98,13 +96,12 @@ class App extends React.Component {
     .catch(
       error => {
         console.error(error)
-        this.setState({ loading: false })
+        this.setState({ results:[], loading: false })
       }
     )
   }
 
   handleChange(id, origin, destination) {
-    console.log("handleChange")
     const books = this.state.books
     const movingBook = books[origin].find(x => x.id === id)
   
@@ -163,14 +160,23 @@ class App extends React.Component {
     this.handleSearchDebounced()
   }  
 
+  resetQuery() {
+    this.setState({ query: '', results:[] })
+  }
+
   render() {
     return (
       <div className="app">
         <Route path="/search" render={() => (
-          <Search {...this.state} putOnShelf={this.putOnShelf} updateQuery={this.updateQuery} />
+          <Search {...this.state} 
+            putOnShelf={this.putOnShelf} 
+            updateQuery={this.updateQuery} 
+            resetQuery={this.resetQuery} />
         )} />
         <Route exact path="/" render={ () => (
-          <BookList {...this.state} onShelfChanged={this.handleChange} />
+          <BookList {...this.state} 
+            onShelfChanged={this.handleChange}
+            resetQuery={this.resetQuery} />
         )} />
       </div>
     )

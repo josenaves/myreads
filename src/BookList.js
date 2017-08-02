@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import BookShelf from './BookShelf'
 
-export default function BookList({ loading, books, onShelfChanged=f=>f}) {
+export default function BookList({ loading, books, onShelfChanged=f=>f, resetQuery=f=>f}) {
   const linkTo = { pathname:'/search', state: {query:''} }
   return (
     <div className="list-books">
@@ -32,7 +32,7 @@ export default function BookList({ loading, books, onShelfChanged=f=>f}) {
         )}
       </div>
       <div className="open-search">
-        <Link to={linkTo}>Add a book</Link>
+        <Link to={linkTo} onClick={resetQuery}>Add a book</Link>
       </div>
     </div>
   )

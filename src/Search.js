@@ -2,12 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Book from './Book'
 
-function Search({query="", loading=false, results=[], putOnShelf=f=>f, updateQuery=f=>f})  {
+function Search({query="", loading=false, results=[], putOnShelf=f=>f, updateQuery=f=>f, resetQuery=f=>f})  {
   const linkTo = { pathname: '/', state: { query : '', results:[] } }
   return (
     <div className="search-books">
       <div className="search-books-bar">
-        <Link to={linkTo} className="close-search">
+        <Link to={linkTo} className="close-search" onClick={resetQuery}>
           Close
         </Link>
                       
@@ -23,6 +23,7 @@ function Search({query="", loading=false, results=[], putOnShelf=f=>f, updateQue
         { loading ? ( <div><p>Loading...</p></div> )
           : (
             <div>
+              { results.length ? (
               <ol className="books-grid">
               { results.map( book =>
                 <li key={book.id}>
@@ -32,6 +33,12 @@ function Search({query="", loading=false, results=[], putOnShelf=f=>f, updateQue
                 </li> 
               )}
               </ol>
+              )
+              :
+              (
+                <p>No books found</p>
+              )}
+
             </div>
             )
         }
