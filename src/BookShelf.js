@@ -2,7 +2,7 @@ import React from 'react'
 import Book from './Book'
 import PropTypes from 'prop-types'
 
-function BookShelf({ title, books, onShelfChanged=f=>f }) {
+function BookShelf({ title="", books={currentlyReading:[],wantToRead:[],read:[]}, onShelfChanged=f=>f }) {
   return (
     <div className="bookshelf">
       <h2 className="bookshelf-title">{title}</h2>
@@ -32,3 +32,4 @@ BookShelf.propTypes = {
 }
 
 export default BookShelf
+ 
