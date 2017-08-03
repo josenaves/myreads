@@ -41,7 +41,7 @@ The project uses the following dependencies:
 - Move books between shelves
 - Remove a book from shelf
 - Debounce on search
-
+- Error messages displayed
 
 ## Who am I
 

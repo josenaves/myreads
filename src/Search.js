@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Book from './Book'
 
-function Search({query="", loading=false, results=[], putOnShelf=f=>f, updateQuery=f=>f, resetQuery=f=>f})  {
+function Search({query="", loading=false, error="", results=[], putOnShelf=f=>f, updateQuery=f=>f, resetQuery=f=>f})  {
   const linkTo = { pathname: '/', state: { query : '', results:[] } }
   return (
     <div className="search-books">
@@ -20,27 +20,25 @@ function Search({query="", loading=false, results=[], putOnShelf=f=>f, updateQue
         </div>
       </div>
       <div className="search-books-results">
-        { loading ? ( <div><p>Loading...</p></div> )
-          : (
+        { loading ? ( <div><p>Searching...</p></div> )
+          :
+          (
             <div>
-              { results.length ? (
-              <ol className="books-grid">
-              { results.map( book =>
-                <li key={book.id}>
-                  <Book 
-                    {...book}
-                    onShelfChanged={ e => putOnShelf(book, e.target.value) } />
-                </li> 
-              )}
-              </ol>
-              )
-              :
+              { error ? ( <p>{error}</p> )
+              : 
               (
-                <p>No books found</p>
+                <ol className="books-grid">
+                { results.map( book =>
+                  <li key={book.id}>
+                    <Book 
+                      {...book}
+                      onShelfChanged={ e => putOnShelf(book, e.target.value) } />
+                  </li> 
+                )}
+                </ol>
               )}
-
             </div>
-            )
+          )
         }
       </div>
     </div>

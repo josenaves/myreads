@@ -20,7 +20,8 @@ class App extends React.Component {
       },
       results: [],
       query: '',
-      loading: false
+      loading: false,
+      error: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -36,8 +37,8 @@ class App extends React.Component {
     this.handleSearchDebounced = _.debounce(() => {
       search(this.state.query, 20).then( books => {
         if (books.error) {
-          this.setState({ results:[], loading: false })
-          console.error("---- No books !")
+          this.setState({ results:[], loading: false, error: 'No books found' })
+          console.error("---- No books found !")
         } else {
           const myBooks = [ 
             ...this.state.books.currentlyReading, 
@@ -55,13 +56,13 @@ class App extends React.Component {
             return rBook
           })
 
-          this.setState({ results, loading: false })
+          this.setState({ results, loading: false, error: '' })
         }
       })
       .catch(
         err => {
           console.error(">>>> Error in updateQuery", err)
-          this.setState({ results: [], loading: false })
+          this.setState({ results: [], loading: false, error: 'Error updating book' })
         }
       )
     }, 500)
@@ -73,7 +74,7 @@ class App extends React.Component {
     getAll().then(books => {
             
       if (!books) {
-        this.setState({ loading: false })
+        this.setState({ loading: false, error: 'No books loaded' })
         console.error("No books !")
         return
       }
@@ -86,6 +87,7 @@ class App extends React.Component {
 
       this.setState({
         loading: false,
+        error: '',
         books: {
           currentlyReading: [...currentlyReading],
           wantToRead: [...wantToRead],
@@ -95,8 +97,8 @@ class App extends React.Component {
     })
     .catch(
       error => {
+        this.setState({ results:[], loading: false, error: 'Error getting books' })
         console.error(error)
-        this.setState({ results:[], loading: false })
       }
     )
   }
@@ -134,8 +136,10 @@ class App extends React.Component {
     update(movingBook, destination).then(
       this.setState({books})
     ).catch(
-      error => console.error(error)
-    )
+      error => {
+        this.setState({ error: 'Error moving book' })
+        console.error(error)
+      })
   }
 
   putOnShelf(book, destination) {
@@ -146,9 +150,9 @@ class App extends React.Component {
       book.shelf = destination
       const booksToUpdate = this.state.books
       booksToUpdate[destination] = [...booksToUpdate[destination], book] 
-
     }).catch(
       error => {
+        this.setState({ error: 'Error updating book'})
         console.error(error)
       }
     ) 
@@ -156,12 +160,12 @@ class App extends React.Component {
   
   updateQuery(event) {
     const q = event.target.value
-    this.setState({query: q, loading: true})
+    this.setState({query: q, loading: true, error: ''})
     this.handleSearchDebounced()
   }  
 
   resetQuery() {
-    this.setState({ query: '', results:[] })
+    this.setState({ query: '', results:[], error: '' })
   }
 
   render() {
