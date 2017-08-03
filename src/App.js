@@ -98,7 +98,9 @@ class App extends React.Component {
   }
 
   handleChange = (id, origin, destination) => {
-    const books = this.state.books
+    // make a copy of this.state.books
+    const books = _.clone(this.state.books)
+
     const movingBook = books[origin].find(x => x.id === id)
   
     // remove book id from origin shelf
