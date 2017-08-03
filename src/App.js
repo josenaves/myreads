@@ -23,12 +23,6 @@ class App extends React.Component {
       loading: false,
       error: ''
     }
-
-    this.handleChange = this.handleChange.bind(this)
-    this.updateQuery = this.updateQuery.bind(this)
-    this.putOnShelf = this.putOnShelf.bind(this)
-    this.loadBooks = this.loadBooks.bind(this)
-    this.resetQuery = this.resetQuery.bind(this)
   }
   
   componentDidMount(){
@@ -103,7 +97,7 @@ class App extends React.Component {
     )
   }
 
-  handleChange(id, origin, destination) {
+  handleChange = (id, origin, destination) => {
     const books = this.state.books
     const movingBook = books[origin].find(x => x.id === id)
   
@@ -142,7 +136,7 @@ class App extends React.Component {
       })
   }
 
-  putOnShelf(book, destination) {
+  putOnShelf = (book, destination) => {
     if (destination === 'none') return
 
     // call API to update book shelf
@@ -158,13 +152,13 @@ class App extends React.Component {
     ) 
   }
   
-  updateQuery(event) {
+  updateQuery = (event) => {
     const q = event.target.value
     this.setState({query: q, loading: true, error: ''})
     this.handleSearchDebounced()
   }  
 
-  resetQuery() {
+  resetQuery = () => {
     this.setState({ query: '', results:[], error: '' })
   }
 
