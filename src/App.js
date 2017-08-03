@@ -83,9 +83,9 @@ class App extends React.Component {
         loading: false,
         error: '',
         books: {
-          currentlyReading: [...currentlyReading],
-          wantToRead: [...wantToRead],
-          read: [...read]
+          currentlyReading,
+          wantToRead,
+          read
         }
       })
     })
