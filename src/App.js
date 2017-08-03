@@ -141,6 +141,23 @@ class App extends React.Component {
   putOnShelf = (book, destination) => {
     if (destination === 'none') return
 
+    const { currentlyReading, wantToRead, read } = this.state.books
+
+    if (this.checkBookAlreadyInShelf(book, currentlyReading)) {
+      this.setState({ error: 'Book already in currentlyReading shelf'})
+      return
+    }
+
+    if (this.checkBookAlreadyInShelf(book, wantToRead)) {
+      this.setState({ error: 'Book already in wantToRead shelf'})
+      return
+    }
+
+    if (this.checkBookAlreadyInShelf(book, read)) {
+      this.setState({ error: 'Book already in read shelf'})
+      return
+    }
+
     // call API to update book shelf
     update(book, destination).then( res => {
       book.shelf = destination
@@ -152,6 +169,11 @@ class App extends React.Component {
         console.error(error)
       }
     ) 
+  }
+
+  checkBookAlreadyInShelf(book, shelf) {
+    const found = shelf.find( b => b.id === book.id )
+    return (found) ? true : false
   }
   
   updateQuery = (event) => {
