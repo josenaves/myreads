@@ -25,7 +25,7 @@ This should run for some minutes, be patient. When it finishes, type:
 > npm start
 ```
 
-A new window sould open in your default browser and you can play around with my app.
+A new window should open in your default browser and you can play around with my app.
 
 ## Libraries used
 
